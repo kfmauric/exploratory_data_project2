@@ -1,4 +1,4 @@
-# First Plot for Exploratory Data Analysis Project 2
+# Second Plot for Exploratory Data Analysis Project 2
 
 #Load Data from working fles in Current working Directory
 ## This first line will likely take a few seconds. Be patient!
