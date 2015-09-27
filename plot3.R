@@ -23,9 +23,17 @@ NEI_baltimore_testc <- NEI_baltimore[(NEI_baltimore$Emissions<=1)&(NEI_baltimore
 NEI_baltimore_testd <- NEI_baltimore[(NEI_baltimore$Emissions<=8)&(NEI_baltimore$type=="POINT"),]
 
 NEI_baltimore_foot <- rbind(NEI_baltimore_testd, NEI_baltimore_testc, NEI_baltimore_testb, NEI_baltimore_testa)
+#Still need to total this by year
+#summarize data by year
+#total_pm2p5_tmp <-tapply(NEI_baltimore_foot$Emissions, NEI_baltimore_foot$year, sum)
+#total_pm2p5 <- data.frame(year = as.numeric(names(total_pm2p5_tmp)), polution = total_pm2p5_tmp)
+mNEI_baltimore_foot <- melt(NEI_baltimore_foot, id=c("type", "year"))
+foo<-mNEI_baltimore_foot[mNEI_baltimore_foot$variable=="Emissions",]
+foo$value <- as.numeric(foo$value)
+mcNEI_baltimore_foot <- dcast(foo, year+type~variable, mean)
 
 # creat ggplot object with the base data and title
-mplot <- ggplot(NEI_baltimore_foot, aes(year, Emissions)) + ggtitle("Total Emissions from PM2.5 in Baltimore City, MD by Type")
+mplot <- ggplot(mcNEI_baltimore_foot, aes(year, Emissions, type)) + ggtitle("Total Emissions from PM2.5 in Baltimore City, MD by Type")
 
 #filter_outliers
 mplot <- mplot + geom_point()
