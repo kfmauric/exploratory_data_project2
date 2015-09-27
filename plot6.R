@@ -25,11 +25,14 @@ NEI_motor_vehicle$ffips <- factor(NEI_motor_vehicle$fips, c("24510", "06037"), c
 mNEI_motor_vehicle <- melt(NEI_motor_vehicle, id=c("ffips", "year"))
 foo<-mNEI_motor_vehicle[mNEI_motor_vehicle$variable=="Emissions",]
 foo$value <- as.numeric(foo$value)
-mcNEI_motor_vehicle <- dcast(foo, year+ffips~variable, mean)
+
+#Use median to get rid of some high fliers
+# Same categories of measurements high fliers are noise
+mcNEI_motor_vehicle <- dcast(foo, year+ffips~variable, median)
 
 
 # creat ggplot object with the base data and title
-mplot <- ggplot(mcNEI_motor_vehicle, aes(year, Emissions, ffips)) + ggtitle("Total Emissions from Motor Vehicles")
+mplot <- ggplot(mcNEI_motor_vehicle, aes(year, Emissions, ffips)) + ggtitle("Median Emissions from Motor Vehicles")
 
 
 #add points and add facets
@@ -40,7 +43,7 @@ mplot <- mplot + facet_wrap(~ffips, scales = "fixed") + geom_point()
 
 
 #add regression line
-mplot <- mplot + geom_smooth(method="auto")
+mplot <- mplot + geom_line()
 #
 # open model to plot to file
 png(filename = "plot6.png")

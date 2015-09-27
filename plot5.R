@@ -1,4 +1,6 @@
 #Fifth plot for project 2
+require(reshape2)
+require(ggplot2)
 #Load Data from working fles in Current working Directory
 ## This first line will likely take a few seconds. Be patient!
 NEI <- readRDS("summarySCC_PM25.rds")
@@ -16,7 +18,7 @@ motor_vehicle_scc<-SCC$SCC[regexpr("Mobile - On-Road", SCC$EI.Sector)>0]
 
 #subset polution data to include only motor vehicle sources and Baltimore City
 NEI_motor_vehicle <- NEI[NEI$SCC %in% motor_vehicle_scc & NEI$fips=="24510",]
-total_pm2p5_tmp <-tapply(NEI_motor_vehicle$Emissions, NEI_motor_vehicle$year, sum)
+total_pm2p5_tmp <-tapply(NEI_motor_vehicle$Emissions, NEI_motor_vehicle$year, median)
 total_pm2p5 <- data.frame(year = as.numeric(names(total_pm2p5_tmp)), polution = total_pm2p5_tmp)
 
 #
@@ -24,16 +26,17 @@ total_pm2p5 <- data.frame(year = as.numeric(names(total_pm2p5_tmp)), polution = 
 png(filename = "plot5.png")
 
 #plot the data with axis labels
-plot(names(total_pm2p5_tmp), total_pm2p5_tmp, xlab="Year", ylab="PM2.5 Emision in tons", pch=19, col="red")
+plot(names(total_pm2p5_tmp), total_pm2p5_tmp, xlab="Year", ylab="PM2.5 Emision in tons", pch=19, col="red", type="o")
 #plot(total_pm2p5$year, total_pm2p5$polution, xlab="Year", ylab="PM2.5 Emision in tons")
 #add a title
-title("Total Emissions from Motor Vehicle Srcs. in Baltimore City, MD")
+title("Median Emissions from Motor Vehicle Srcs. in Baltimore City, MD")
 
 #Add a regression line
 x<-as.numeric(names(total_pm2p5_tmp))
 y<-as.vector(total_pm2p5$polution)
 model <- lm(y~x)
-abline(model, lwd=1)
+#this does not really add very much information
+#abline(model, lwd=1)
 
 #close open device
 dev.off()

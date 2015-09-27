@@ -1,5 +1,6 @@
 # Third Plot for Exploratory Data Analysis Project 2
-
+require(reshape2)
+require(ggplot2)
 #Load Data from working fles in Current working Directory
 ## This first line will likely take a few seconds. Be patient!
 NEI <- readRDS("summarySCC_PM25.rds")
@@ -16,6 +17,7 @@ NEI_baltimore <- NEI[NEI$fips=="24510",]
 #need to filter  outliers for pretty plots
 # leave zero as low limit
 #high limit is Q3 + 1.5*IQR
+#code caused problesm so limits were coded by hand to correspond to computed limits mentioned above
 up_limit<-as.numeric(by(NEI_baltimore$Emissions, NEI_baltimore$type, function(x) quantile(x, probs = 0.75)+1.5*IQR(x)))
 NEI_baltimore_testa <- NEI_baltimore[(NEI_baltimore$Emissions<=2)&(NEI_baltimore$type=="NON-ROAD"),]
 NEI_baltimore_testb <- NEI_baltimore[(NEI_baltimore$Emissions<=70)&(NEI_baltimore$type=="NONPOINT"),]
